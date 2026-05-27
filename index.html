@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>halo calon pacar | Aesthetic Couple Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* prevent accidental text selection on buttons, but keep readable */
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Poppins', 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: linear-gradient(145deg, #fad0e9 0%, #e0b3ff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #2c1a3a;
+            scroll-behavior: smooth;
+        }
+
+        /* Background bokeh + love particles (floating tiny hearts) */
+        .bokeh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bokeh-bg .love-particle {
+            position: absolute;
+            font-size: 1rem;
+            opacity: 0.2;
+            animation: floatLove 18s infinite ease-in-out;
+            filter: blur(0.4px);
+            color: #ff99cc;
+        }
+
+        @keyframes floatLove {
+            0% {
+                transform: translateY(100vh) scale(0.6) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.4;
+            }
+            80% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-20vh) scale(1.2) rotate(15deg);
+                opacity: 0;
+            }
+        }
+
+        /* main container */
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+            backdrop-filter: blur(0px);
+        }
+
+        /* musik player floating card */
+        .music-player {
+            position: fixed;
+            bottom: 28px;
+            right: 24px;
+            z-index: 30;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(12px);
+            border-radius: 60px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .music-player button {
+            background: rgba(255, 200, 230, 0.8);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            transition: 0.2s;
+            color: #ad6bc7;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .music-player button:hover {
+            transform: scale(1.05);
+            background: #ffbfe0;
+            color: #b13e8e;
+        }
+
+        .music-player span {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #5e2a7a;
+            letter-spacing: -0.2px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 4px 12px;
+            border-radius: 60px;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Layout utama: 2 kolom di desktop, mobile stacking */
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0 4rem;
+        }
+
+        .photo-col {
+            flex: 1.2;
+            min-width: 280px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .photo-frame {
+            width: 100%;
+            max-width: 460px;
+            border-radius: 38px;
+            background: rgba(255, 245, 250, 0.3);
+            backdrop-filter: blur(4px);
+            padding: 12px;
+            box-shadow: 0 25px 45px rgba(156, 70, 155, 0.2), 0 0 0 1px rgba(255, 215, 245, 0.7);
+            transition: transform 0.3s ease;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 30px;
+            object-fit: cover;
+            aspect-ratio: 1 / 1;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s;
+        }
+
+        /* tulisan aesthetic side */
+        .text-col {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .quote-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            border-radius: 36px;
+            padding: 2rem 1.8rem;
+            border: 1px solid rgba(255, 235, 250, 0.9);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+        }
+
+        .quote-item {
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.7s ease;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            font-weight: 450;
+            color: #2e1a44;
+            letter-spacing: -0.2px;
+            border-left: 3px solid #ff9bc0;
+            padding-left: 18px;
+        }
+
+        .quote-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quote-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* tombol besar area */
+        .action-section {
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 2rem 2rem 2.5rem;
+            max-width: 650px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .big-question {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #60257e;
+            text-shadow: 0 2px 5px rgba(255, 215, 245, 0.6);
+            letter-spacing: -0.5px;
+            margin-bottom: 1.8rem;
+        }
+
+        .btn-mau {
+            background: linear-gradient(135deg, #ff81bd, #d86eff);
+            border: none;
+            font-size: 2rem;
+            font-weight: bold;
+            padding: 1rem 2.8rem;
+            border-radius: 60px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 10px 25px #ff8ed47a, 0 0 12px rgba(255, 130, 200, 0.6);
+            transition: 0.2s all;
+            font-family: inherit;
+            letter-spacing: 1px;
+            backdrop-filter: blur(2px);
+        }
+
+        .btn-mau:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px #ff96dfb3;
+            background: linear-gradient(135deg, #ff6eb0, #c85eff);
+        }
+
+        .btn-mau:active {
+            transform: scale(0.98);
+        }
+
+        /* footer minimalis */
+        .footer-note {
+            margin-top: 5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #69477e;
+            font-weight: 400;
+            background: rgba(255, 245, 250, 0.4);
+            backdrop-filter: blur(6px);
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0.6rem 1.8rem;
+            border-radius: 60px;
+            letter-spacing: -0.2px;
+        }
+
+        /* overlay animasi love setelah tekan tombol */
+        .love-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,230,250,0.8), rgba(220,170,255,0.7));
+            backdrop-filter: brightness(1.1) blur(6px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+            pointer-events: none;
+        }
+
+        .love-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.4s ease, visibility 0s linear 0s;
+            pointer-events: none;
+        }
+
+        .big-message {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 8px 20px #c94f9b;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(12px);
+            padding: 0.6rem 2rem;
+            border-radius: 80px;
+            letter-spacing: -0.5px;
+            text-align: center;
+            animation: popGlow 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+        }
+
+        @keyframes popGlow {
+            0% { transform: scale(0.7); opacity: 0; }
+            80% { transform: scale(1.05);}
+            100% { transform: scale(1); opacity: 1;}
+        }
+
+        /* love floating effect di overlay */
+        .floating-love {
+            position: absolute;
+            font-size: 2.2rem;
+            pointer-events: none;
+            animation: riseLove 1.2s ease-out forwards;
+            color: #ff6bb3;
+            filter: drop-shadow(0 0 4px #ffc0e0);
+        }
+
+        @keyframes riseLove {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-150px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .hero {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .photo-frame {
+                max-width: 360px;
+            }
+            .big-question {
+                font-size: 1.8rem;
+            }
+            .btn-mau {
+                font-size: 1.7rem;
+                padding: 0.9rem 2rem;
+            }
+            .quote-item {
+                font-size: 1rem;
+            }
+            .container {
+                padding: 1.5rem 1.2rem 3rem;
+            }
+            .big-message {
+                font-size: 2rem;
+                text-align: center;
+                margin: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quote-item {
+                font-size: 0.95rem;
+                padding-left: 14px;
+            }
+        }
+
+        /* smooth scroll reveal */
+        .hidden-init {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background bokeh + love particle dinamis -->
+<div class="bokeh-bg" id="bokehBg"></div>
+
+<!-- Music Player (floating) -->
+<div class="music-player">
+    <button id="playPauseBtn" aria-label="Play/Pause">⏸️</button>
+    <span>🎵 PENCET</span>
+</div>
+
+<main class="container">
+    <!-- Hero: foto besar + tulisan -->
+    <div class="hero">
+        <div class="photo-col">
+            <div class="photo-frame">
+                <img src="image1.jpg" alt="foto kenangan" id="mainPhoto" onerror="this.onerror=null; this.src='https://placehold.co/600x600/f8d9ff/c274d8?text=image1.jpg'">
+            </div>
+        </div>
+        <div class="text-col">
+            <div class="quote-card">
+                <div class="quote-item scroll-fade">“setelah sekian lama tidak saling tahu kabar, ternyata aku masih bisa menemukan rasa nyaman dari cara kita berbicara seperti dulu. tidak banyak yang berubah, hanya waktunya saja yang sempat membuat semuanya terasa jauh.”</div>
+                <div class="quote-item scroll-fade">“aku sempat berpikir semua hal tentang kita sudah selesai sejak lama. tapi anehnya, beberapa percakapan kecil akhir-akhir ini justru membuatku sadar kalau ada perasaan yang tidak benar-benar pergi. dia hanya diam, menunggu waktu yang tepat untuk muncul lagi.”</div>
+                <div class="quote-item scroll-fade">“aku tidak sedang mencoba mengulang masa lalu. aku hanya merasa, ada bagian dari dirimu yang masih selalu berhasil membuat suasana menjadi lebih tenang, bahkan tanpa melakukan apa-apa.”</div>
+                <div class="quote-item scroll-fade">“dan setelah semua waktu yang lewat, aku mulai sadar kalau beberapa rasa ternyata tidak hilang. mereka hanya tumbuh menjadi lebih tenang.”</div>
+                <div class="quote-item scroll-fade">“kalau kali ini hidup memberi kesempatan untuk berjalan lagi ke arah yang sama, aku ingin menjalaninya dengan cara yang lebih baik.”</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card besar + tombol -->
+    <div class="action-section">
+        <div class="glass-card">
+            <div class="big-question">ujuj, mau ga jadi pacar aku lagi? </div>
+            <button class="btn-mau" id="yesButton">mau</button>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        “kadang yang kembali bukan masa lalunya, tapi rasa nyamannya.”
+    </div>
+</main>
+
+<!-- Overlay untuk efek animasi setelah klik tombol -->
+<div id="loveOverlay" class="love-overlay">
+    <div class="big-message">“cie, mauu wkwkwk. maaf ya pilihannya cuma satu, soalnya kalau ditolak mungkin hari ini bakal terasa lebih sepi dari biasanya. makasih udah datang lagi setelah semua waktu yang bikin kita sempat asing. aneh sih, tapi sejak ada kamu lagi, dunia rasanya lebih tenang.”
+</div>
+</div>
+
+<script>
+    // -------- AUDIO BACKSOUND (auto play dengan promise handling) ----------
+    const audio = new Audio('lagu1.mp3');
+    audio.loop = true;
+    audio.volume = 0.4;   // pelan, aesthetic
+
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    let isPlaying = false;
+
+    // fungsi play audio dengan autoplay handling
+    function playAudio() {
+        audio.play().then(() => {
+            isPlaying = true;
+            playPauseBtn.innerHTML = '⏸️';
+        }).catch(e => {
+            console.log("autoplay dicegah, butuh interaksi user");
+            isPlaying = false;
+            playPauseBtn.innerHTML = '▶️';
+        });
+    }
+
+    function pauseAudio() {
+        audio.pause();
+        isPlaying = false;
+        playPauseBtn.innerHTML = '▶️';
+    }
+
+    // Tombol play pause manual
+    playPauseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isPlaying) {
+            pauseAudio();
+        } else {
+            playAudio();
+        }
+    });
+
+    // mencoba autoplay otomatis saat halaman dimuat (bisa diblokir browser)
+    // namun kita akan tetap coba, jika gagal, user bisa klik tombol.
+    window.addEventListener('load', () => {
+        // sedikit delay untuk memberi kesempatan load resources
+        setTimeout(() => {
+            playAudio();
+        }, 300);
+        // juga atasi agar saat interaksi pertama kali di layar (scroll atau klik) play jika belum
+        const attemptAuto = () => {
+            if (!isPlaying) {
+                playAudio();
+            }
+            document.removeEventListener('click', attemptAuto);
+            document.removeEventListener('touchstart', attemptAuto);
+        };
+        if (!isPlaying) {
+            document.addEventListener('click', attemptAuto);
+            document.addEventListener('touchstart', attemptAuto);
+        }
+    });
+
+    // ----- SCROLL ANIMATION FADE UP (Intersection Observer) -------
+    const fadeElements = document.querySelectorAll('.scroll-fade');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2, rootMargin: "0px 0px -30px 0px" });
+    
+    fadeElements.forEach(el => observer.observe(el));
+    
+    // juga ekstra: pastikan semua fade element yang sudah terlihat di awal bisa kelihatan
+    // namun karena observer akan tetap bekerja, fine.
+    
+    // ----- TOMBOL MAU (dengan efek love & overlay) -------
+    const yesBtn = document.getElementById('yesButton');
+    const overlay = document.getElementById('loveOverlay');
+    
+    // fungsi untuk generate floating love di overlay saat tombol ditekan
+    function createFloatingLoves(count = 28) {
+        const overlayDiv = overlay;
+        for (let i = 0; i < count; i++) {
+            const loveSpan = document.createElement('div');
+            loveSpan.classList.add('floating-love');
+            loveSpan.innerHTML = ['❤️', '💖', '💗', '💕', '💓', '🌸', '✨', '💘'][Math.floor(Math.random() * 7)];
+            const size = Math.floor(Math.random() * 28 + 18); // 18-46px
+            loveSpan.style.fontSize = size + 'px';
+            loveSpan.style.left = Math.random() * 100 + '%';
+            loveSpan.style.top = Math.random() * 70 + 15 + '%';
+            loveSpan.style.position = 'absolute';
+            loveSpan.style.pointerEvents = 'none';
+            const duration = Math.random() * 1.2 + 0.8;
+            loveSpan.style.animation = `riseLove ${duration}s ease-out forwards`;
+            overlayDiv.appendChild(loveSpan);
+            setTimeout(() => {
+                loveSpan.remove();
+            }, duration * 1000);
+        }
+    }
+
+    // saat tombol "mau" ditekan
+    yesBtn.addEventListener('click', () => {
+        // 1. tambahkan animasi love dan glow memenuhi layar
+        // 2. background lebih terang di overlay
+        // 3. tampilkan tulisan besar "makasih udah hadir lagi."
+        
+        // aktifkan overlay
+        overlay.classList.add('active');
+        
+        // generate love di seluruh area overlay
+        createFloatingLoves(40);
+        
+        // glow dan efek tambahan: membuat body sedikit lebih terang sementara? sudah diatur di overlay gradient
+        
+        // tambahan: background music bisa tetap jalan, sesuai permintaan
+        // untuk efek cinematic, overlay otomatis akan hilang setelah beberapa detik,
+        // namun tulisan tetap muncul sampai user klik? biarkan selama 4 detik dan fade out
+        // namun user bisa melihat, setelah itu kembali ke halaman namun tetap menunjukkan pesan
+        // namun sesuai keinginan: saat ditekan muncul animasi, tulisan besar "makasih udah hadir lagi."
+        // kita beri timeout untuk menonaktifkan overlay setelah 4.5 detik (agar tidak mengganggu)
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            // bersihkan love yang mungkin tersisa (opsional)
+            const remains = overlay.querySelectorAll('.floating-love');
+            remains.forEach(l => l.remove());
+        }, 4500);
+        
+        // tambahan efek surprise: sedikit getar tombol atau konfeti style via heartbeat
+        yesBtn.style.transform = 'scale(0.98)';
+        setTimeout(() => { yesBtn.style.transform = ''; }, 200);
+        
+        // (opsional: ubah tulisan pada tombol tidak diperlukan)
+        
+        // juga kita bisa tampilkan notifikasi kecil tapi tidak mengganggu.
+    });
+    
+    // ----- PRECAUTION: Jika image1.jpg tidak ada, fallback sudah ada onerror di img.
+    // ----- LAGU: extra memastikan play ketika tombol diklik interaksi awal, juga
+    document.body.addEventListener('click', (e) => {
+        // jika lagu belum berjalan dan bukan tombol play/pause (tapi tombol play/pause sudah handle), coba putar
+        if (!isPlaying && e.target !== playPauseBtn && !playPauseBtn.contains(e.target)) {
+            playAudio();
+        }
+    }, { once: false });
+    
+    // tambahan small love particle di background (bokeh love kecil gerak pelan)
+    function initBackgroundBokeh() {
+        const bokehContainer = document.getElementById('bokehBg');
+        const loveSymbols = ['❤️', '💗', '🌸', '✨', '💕', '🎀', '💖'];
+        for (let i = 0; i < 35; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('love-particle');
+            const randomSymbol = loveSymbols[Math.floor(Math.random() * loveSymbols.length)];
+            particle.innerHTML = randomSymbol;
+            const size = Math.random() * 18 + 12;
+            particle.style.fontSize = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = Math.random() * 12 + 10 + 's';
+            particle.style.opacity = Math.random() * 0.25 + 0.1;
+            particle.style.filter = 'blur(0.8px)';
+            bokehContainer.appendChild(particle);
+        }
+    }
+    initBackgroundBokeh();
+    
+    // efek glow halus pada foto dan card: via css sudah
+    
+    // tambahan efek agar floating music card tidak mengganggu
+    // memastikan layar responsive
+    
+    // Perbaiki tombol play/pause ikon saat lagu dimulai otomatis mungkin gagal,
+    // tapi state akan sinkron.
+    audio.addEventListener('play', () => {
+        isPlaying = true;
+        if (playPauseBtn) playPauseBtn.innerHTML = '⏸️';
+    });
+    audio.addEventListener('pause', () => {
+        isPlaying = false;
+        if (playPauseBtn) playPauseBtn.innerHTML = '▶️';
+    });
+    
+    // Jika ada error autoplay, user dapat mengklik tombol play / atau klik di mana saja
+    // set volume awal normal
+    audio.volume = 0.4;
+</script>
+</body>
+</html>
